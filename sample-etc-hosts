@@ -1,0 +1,5 @@
+127.0.0.1       local-postgres
+127.0.0.1       local-kafka
+127.0.0.1       local-mongodb
+127.0.0.1       demo-input-service
+127.0.0.1       demo-output-service
