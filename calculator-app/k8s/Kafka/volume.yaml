@@ -1,0 +1,131 @@
+# Broker Volumes
+# ---------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-broker-data-pv
+  labels:
+    backing-svc: kafka-broker
+  namespace: kafka-cluster
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-disk-storage
+  hostPath:
+    path: /Users/I537692/K8s-Demo/storage/kafka/broker/data
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - docker-desktop
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-broker-data-pvc
+  labels:
+    backing-svc: kafka-broker
+  namespace: kafka-cluster
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-disk-storage
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+
+# Zookeeper Volumes
+# ---------
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-zookeeper-logs-pv
+  labels:
+    backing-svc: kafka-zookeeper
+  namespace: kafka-cluster
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-disk-storage
+  hostPath:
+    path: /Users/I537692/K8s-Demo/storage/kafka/zookeeper/logs
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - docker-desktop
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-zookeeper-logs-pvc
+  labels:
+    backing-svc: kafka-zookeeper
+  namespace: kafka-cluster
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-disk-storage
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-zookeeper-data-pv
+  labels:
+    backing-svc: kafka-zookeeper
+  namespace: kafka-cluster
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-disk-storage
+  hostPath:
+    path: /Users/I537692/K8s-Demo/storage/kafka/zookeeper/data
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - docker-desktop
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-zookeeper-data-pvc
+  labels:
+    backing-svc: kafka-zookeeper
+  namespace: kafka-cluster
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-disk-storage
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi

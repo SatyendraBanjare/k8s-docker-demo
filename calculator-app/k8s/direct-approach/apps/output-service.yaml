@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    backing-svc-app: output
+  name: output
+  namespace: calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      backing-svc-app: output
+  template:
+    metadata:
+      labels:
+        backing-svc-app: output
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: docker-desktop
+      containers:
+        - name: output
+          image: demo-output-service
+          imagePullPolicy: IfNotPresent
+          # command : ["/bin/bash", "-c", "tail -f /dev/null"]
+          env:
+            - name: KAFKA_CLIENT_ID
+              value: output-service
+            - name: BOOTSTRAP_SERVERS
+              value: kafka-broker-headless-service.kafka-cluster.svc.cluster.local:9095
+          ports:
+            - containerPort: 9001
+          volumeMounts:
+            - mountPath: "/data"
+              name: output-data-storage
+      volumes:
+        - name: output-data-storage
+          persistentVolumeClaim:
+            claimName: output-service-data-pvc
+

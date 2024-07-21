@@ -1,0 +1,60 @@
+version: '2'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2185
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22185:2185
+    volumes:
+     - ${ROOT_PATH}/zk-data:/var/lib/zookeeper/data
+     - ${ROOT_PATH}/zk-logs:/var/lib/zookeeper/log
+    networks:
+      - my-network
+  
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    depends_on:
+      - zookeeper
+    ports:
+      - 29095:29095
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2185
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9095,PLAINTEXT_HOST://localhost:29095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+     - ${ROOT_PATH}/kafka-logs:/var/lib/kafka/data
+    networks:
+      - my-network
+  
+  input-service:
+    image: demo-input-service
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_CLIENT_ID=input-service
+      - BOOTSTRAP_SERVERS=kafka:9095
+    ports:
+      - 4000:9000
+    networks:
+      - my-network
+  
+  output-service:
+    image: demo-output-service
+    depends_on:
+      - kafka
+      - input-service
+    environment:
+      - KAFKA_CLIENT_ID=output-service
+      - BOOTSTRAP_SERVERS=kafka:9095
+    ports:
+      - 4001:9001
+    networks:
+      - my-network
+
+networks:
+  my-network: {}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    backing-svc-app: input-service
+  name: input-service
+  namespace: calculator
+spec:
+  type: NodePort
+  ports:
+    - name: input-port
+      port: 9000
+      targetPort: 9000
+  selector:
+    backing-svc-app: input

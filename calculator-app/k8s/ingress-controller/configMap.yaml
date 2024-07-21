@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: ingress-nginx
+data:
+  9092: "kafka-cluster/kafka-broker-service:9092"
+  9000: "calculator/input-service:9000"
+  9001: "calculator/output-service:9001"

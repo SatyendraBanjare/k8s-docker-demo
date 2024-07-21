@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    backing-svc-app: output-service
+  name: output-service
+  namespace: calculator
+spec:
+  type: NodePort
+  ports:
+    - name: output-port
+      port: 9001
+      targetPort: 9001
+  selector:
+    backing-svc-app: output

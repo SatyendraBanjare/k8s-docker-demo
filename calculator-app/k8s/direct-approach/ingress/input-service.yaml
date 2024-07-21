@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress 
+metadata:
+  name: ingress-input-service
+  namespace: calculator
+spec:
+  rules:
+  - host: demo-input-service
+    http:
+      paths:
+      - path: / 
+        pathType: Prefix
+        backend:
+          service:
+            name:  input-service
+            port: 
+              number: 9000

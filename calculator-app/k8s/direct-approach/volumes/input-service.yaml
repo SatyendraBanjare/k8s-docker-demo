@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: input-service-data-pv
+  labels:
+    backing-svc: input-service
+  namespace: calculator
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-disk-storage
+  hostPath:
+    path: ${ROOT_PATH}/docker-K8s-rampup/calculator-app/k8s/storage/input
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - docker-desktop
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: input-service-data-pvc
+  labels:
+    backing-svc: input-service
+  namespace: calculator
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-disk-storage
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi

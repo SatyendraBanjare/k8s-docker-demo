@@ -1,0 +1,52 @@
+# broker LoadBalancer service for ingress
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    backing-svc-app: kafka-broker-service
+  name: kafka-broker-service
+  namespace: kafka-cluster
+spec:
+  ports:
+    - port: 9092
+      targetPort: 9092
+      protocol: TCP
+  selector:
+    backing-svc-app: kafka-broker
+  type: LoadBalancer
+
+# NodePort zookeeper service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    backing-svc-app: kafka-zookeeper-service
+  name: kafka-zookeeper-service
+  namespace: kafka-cluster
+spec:
+  type: NodePort
+  ports:
+    - name: kafka-zookeeper-port
+      port: 2181
+      nodePort: 30181
+      targetPort: 2181
+  selector:
+    backing-svc-app: kafka-zookeeper
+
+# Broker Headless service for intra cluster communication
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    backing-svc-app: kafka-broker-headless-service
+  name: kafka-broker-headless-service
+  namespace: kafka-cluster
+spec:
+  clusterIP: "None"
+  ports:
+  - name: headless-kafka-svc
+    port: 9092
+  selector:
+    backing-svc-app: kafka-broker
